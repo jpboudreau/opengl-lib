@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ClOpenGl" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="ClOpenGl" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-std=c++0x" />
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="GLU" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="ClOpenGl" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-std=c++0x" />
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="include/ClCamera.h" />
+		<Unit filename="include/ClClavier.h" />
+		<Unit filename="include/ClMap.h" />
+		<Unit filename="include/ClOpenGl.h" />
+		<Unit filename="include/Interfaces/IActualisable.h" />
+		<Unit filename="include/Interfaces/IDrawable.h" />
+		<Unit filename="include/Interfaces/IMap.h" />
+		<Unit filename="include/Utilitaire/TypeVecteur2.h" />
+		<Unit filename="include/Utilitaire/Utilitaire.h" />
+		<Unit filename="include/Utilitaire/Vector3.h" />
+		<Unit filename="src/ClCamera.cpp" />
+		<Unit filename="src/ClClavier.cpp" />
+		<Unit filename="src/ClMap.cpp" />
+		<Unit filename="src/ClOpenGl.cpp" />
+		<Unit filename="src/Utilitaire/Utilitaire.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

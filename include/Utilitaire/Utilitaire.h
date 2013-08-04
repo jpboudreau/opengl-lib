@@ -15,6 +15,7 @@ namespace Utilitaire
 GLuint ChargerImage(std::string p_cheminImage);
 
 void EcrireTexte(const TTF_Font *Font, SDL_Color p_couleur,
-                const double& X, const double& Y, const double& Z,  const std::string& Text);
+                const double& X, const double& Y, const double& Z,
+                const std::string& Text);
 }
 #endif

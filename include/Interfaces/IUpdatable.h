@@ -1,10 +1,10 @@
 #if !defined IACTUALISABLE_H_INCLUS
 #define IACTUALISABLE_H_INCLUS
 
-class IActualisable
+class IUpdatable
 {
     public :
-        virtual void MiseAJour() = 0;
+        virtual void Update() = 0;
 };
 
 #endif

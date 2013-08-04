@@ -16,10 +16,14 @@
 #include "ClMap.h"
 #include "ClClavier.h"
 #include "ClCamera.h"
+#include "ClStateManager.h"
+#include "ClMenu.h"
 
-#include "Interfaces/IActualisable.h"
+
+#include "Interfaces/IUpdatable.h"
 #include "Interfaces/IDrawable.h"
 #include "Interfaces/IMap.h"
+#include "Interfaces/IState.h"
 
 #include "Utilitaire/Utilitaire.h"
 #include "Utilitaire/TypeVecteur2.h"
@@ -31,12 +35,17 @@ public :
     ClOpenGl(int *p_pArgc, char** p_pArgv,
             const TypeVecteur2& p_dimension,
             const std::string& p_titre,
+            IState *p_pState,
             Uint32 p_fps = 30,
             unsigned int p_mode = SDL_HWSURFACE | SDL_GL_DOUBLEBUFFER | SDL_OPENGL);
 
     virtual ~ClOpenGl();
 
     void Run();
+    void WriteText(const std::string& p_texte, const TypeVecteur2& p_position,
+                    SDL_Color p_color = {0, 0, 0});
+
+    TypeVecteur2 ScreenSize() { return TypeVecteur2(m_pEcran->w, m_pEcran->h); }
 
 private :
     // On ferme tout ce qu'on à ouvert
@@ -47,10 +56,6 @@ private :
      */
     void ChangerDimension(int p_largeur, int p_hauteur);
 
-    virtual void Draw();
-    virtual void Update();
-
-    void EcrireTexte(const std::string& p_texte, const TypeVecteur2& p_position);
     void Perspective();
     void Ortho();
 
@@ -58,6 +63,8 @@ private :
     SDL_Surface *m_pEcran;
     SDL_Event m_event;
     Uint32 m_fps;
+
+    ClStateManager *m_pStateManager;
 
     ClCamera *m_pCamera;
 
@@ -76,6 +83,8 @@ private :
 protected:
     ClCamera& Camera() { return *m_pCamera; }
     ClClavier& Keyboard() { return *m_pClavier; }
+    ClStateManager& StateManager() { return *m_pStateManager; };
+
 };
 
 #endif

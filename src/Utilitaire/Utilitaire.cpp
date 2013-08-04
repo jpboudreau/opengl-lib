@@ -58,6 +58,7 @@ void EcrireTexte(const TTF_Font *Font, SDL_Color p_couleur,
 	SDL_Surface *Message = TTF_RenderText_Blended(const_cast<TTF_Font*>(Font), Text.c_str(), p_couleur);
 	unsigned Texture = 0;
 
+
 	glGenTextures(1, &Texture);
 	glBindTexture(GL_TEXTURE_2D, Texture);
 
@@ -67,6 +68,7 @@ void EcrireTexte(const TTF_Font *Font, SDL_Color p_couleur,
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Message->w, Message->h, 0, GL_BGRA,
 	             GL_UNSIGNED_BYTE, Message->pixels);
 
+    glColor3f(1, 1, 1);
 	glBegin(GL_QUADS);
 		glTexCoord2d(0, 0); glVertex3d(X, Y, Z);
 		glTexCoord2d(1, 0); glVertex3d(X+Message->w, Y, Z);

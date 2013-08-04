@@ -7,12 +7,15 @@
 
 using namespace std;
 
-    GLfloat	 lightPos[] = { 0.f, 15.0f, 10.0f, 1.0f };
+GLfloat	 lightPos[] = { 0.f, 15.0f, 10.0f, 1.0f };
+
 ClOpenGl::ClOpenGl(int *p_pArgc, char* p_pArgv[],
                    const TypeVecteur2& p_dimensionEcran,
-                   const string& p_titre, Uint32 p_fps,
+                   const string& p_titre,
+                    IState *p_pState,
+                    Uint32 p_fps,
                    unsigned int p_mode )
-                   : m_pEcran(nullptr), m_fps(p_fps), m_angleX(0.0f), m_angleRotationCamera(0.0f), m_pPolice(nullptr), m_pClavier(ClClavier::Instance()),
+                   : m_pEcran(nullptr),m_fps(p_fps), m_pStateManager(new ClStateManager(this)), m_angleX(0.0f), m_angleRotationCamera(0.0f), m_pPolice(nullptr), m_pClavier(ClClavier::Instance()),
                    m_pMap(nullptr), m_direction(-1)
 {
     // On initialise la SDL
@@ -39,14 +42,14 @@ ClOpenGl::ClOpenGl(int *p_pArgc, char* p_pArgv[],
 
     // Et maintenant OpenGL
     m_pCamera = new ClCamera(p_dimensionEcran.X, p_dimensionEcran.Y,
-                            60.0f, 1.0f, 400.0f);
+                            80.0f, 1.0f, 1000.0f);
 
     glEnable(GL_DEPTH_TEST);
     //glFrontFace(GL_CW);
     //glEnable(GL_CULL_FACE);
 
     // La lumière
-    //glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHTING);
 
     GLfloat  ambientLight[] = { 0.5f, 0.5f, 0.5f, 1.0f };
     GLfloat  specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -65,17 +68,20 @@ ClOpenGl::ClOpenGl(int *p_pArgc, char* p_pArgv[],
 
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
+    //glClearColor(0.2f, 0.9f, 0.9f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glMaterialfv(GL_FRONT, GL_SPECULAR, specref);
     glMateriali(GL_FRONT, GL_SHININESS, 128);
 
     glEnable(GL_NORMALIZE);
 
-	//glEnable( GL_TEXTURE_2D ); // Need this to display a texture
+	glEnable( GL_TEXTURE_2D ); // Need this to display a texture
 
 	// On active le blend pour SDL_ttf
-	//glEnable( GL_BLEND );
-    //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+    m_pStateManager->ChangeState(p_pState);
 }
 
 ClOpenGl::~ClOpenGl()
@@ -85,6 +91,8 @@ ClOpenGl::~ClOpenGl()
 
 void ClOpenGl::Fermer()
 {
+    delete m_pStateManager;
+
     for (unsigned int i = 0; i < m_textures.size(); ++i)
         glDeleteTextures( 1, &m_textures[i] );
 
@@ -140,7 +148,7 @@ void ClOpenGl::Run()
         else
             SDL_Delay(m_fps - (tempsActuel - tempsPrecedent));
 
-        Update();
+        m_pStateManager->Update();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glMatrixMode( GL_MODELVIEW);
@@ -153,31 +161,26 @@ void ClOpenGl::Run()
             glLightfv(GL_LIGHT0,GL_POSITION,lightPos);
         glPopMatrix();
 
-        Draw();
+        m_pStateManager->Draw();
         glFlush();
 
-    SDL_GL_SwapBuffers();
+        SDL_GL_SwapBuffers();
     }
 }
 
-
-void ClOpenGl::Draw()
-{
-}
-
-
-void ClOpenGl::Update()
-{
-}
-
-
-void ClOpenGl::EcrireTexte(const std::string& p_texte, const TypeVecteur2& p_position)
+void ClOpenGl::WriteText(const std::string& p_texte, const TypeVecteur2& p_position, SDL_Color p_color)
 {
     // À vérifier ce n'est pas adéquate
     m_pCamera->ChangeToOrtho();
 
-    Utilitaire::EcrireTexte(m_pPolice, {0, 0, 0},
-                p_position.Y, p_position.X, 0, p_texte);
+    // If we don't disable Lightning for text, text will always be black
+    //  as it don't get lightning.
+    glDisable(GL_LIGHTING);
+
+    Utilitaire::EcrireTexte(m_pPolice, p_color,
+                p_position.X, p_position.Y, 0, p_texte);
+
+    glEnable(GL_LIGHTING);
 
     m_pCamera->ChangeToPerspective();
 }
